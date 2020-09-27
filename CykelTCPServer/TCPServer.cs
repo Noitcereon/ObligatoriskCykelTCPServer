@@ -103,10 +103,11 @@ namespace CykelTCPServer
                                 Console.WriteLine($"Attempt {attempts} failed");
                                 sw.WriteLine($"Forkert format til cyklen, prøv igen ({attempts} af 3 forsøg");
                                 sw.Flush();
+                        
+                                if(attempts >= 3) output = "Afslutter forbindelsen.";
                             }
                         }
 
-                        output = "Afslutter forbindelsen.";
                     }
 
                     break;
