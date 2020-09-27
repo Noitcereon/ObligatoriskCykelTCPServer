@@ -61,13 +61,13 @@ namespace CykelTCPServer
                 case "HentAlle":
                     foreach (var cykel in _bicycles)
                     {
-                        output += $"{cykel} {Environment.NewLine}";
+                        output += $"{JsonSerializer.Serialize(cykel)} {Environment.NewLine}";
                     }
                     break;
                 case "Hent":
                     secondLineInput = sr.ReadLine();
                     var id = Convert.ToInt32(secondLineInput);
-                    output = _bicycles.Find(c => c.Id == id).ToString();
+                    output = JsonSerializer.Serialize(_bicycles.Find(c => c.Id == id));
                     break;
                 case "Gem":
                     sw.WriteLine("Indtast en ny cykel i Json format. Eksempel: {\"Id\" : 6, \"Farve\": \"blå\", \"Gear\": 7, \"Pris\" : 100 }");
@@ -83,8 +83,8 @@ namespace CykelTCPServer
                     }
                     catch
                     {
-                        sw.WriteLine($"Forkert format til cyklen, prøv igen ({attempts} af 3 forsøg");
-                        sw.Flush();
+                        ReportFailedAttempts(attempts, sw);
+
                         while (attempts < 3)
                         {
                             try
@@ -95,14 +95,13 @@ namespace CykelTCPServer
                                 output = _bicycles.Contains(nyCykel)
                                     ? "Ny cykel er gemt."
                                     : "Fejlede i at gemme cykelen.";
+                                break;
                             }
                             catch
                             {
                                 attempts++;
 
-                                Console.WriteLine($"Attempt {attempts} failed");
-                                sw.WriteLine($"Forkert format til cyklen, prøv igen ({attempts} af 3 forsøg");
-                                sw.Flush();
+                                ReportFailedAttempts(attempts, sw);
                         
                                 if(attempts >= 3) output = "Afslutter forbindelsen.";
                             }
@@ -123,6 +122,13 @@ namespace CykelTCPServer
         }
 
         public static int BicycleIdGenerator() => _incrementableId++;
+
+        private void ReportFailedAttempts(int attempts, StreamWriter sw)
+        {
+            Console.WriteLine($"Attempt {attempts} failed");
+            sw.WriteLine($"Forkert format til cyklen, prøv igen ({attempts} af 3 forsøg");
+            sw.Flush();
+        }
 
     }
 }
