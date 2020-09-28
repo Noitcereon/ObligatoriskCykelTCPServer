@@ -59,6 +59,7 @@ namespace CykelTCPServer
             switch (firstLineInput)
             {
                 case "HentAlle":
+                    secondLineInput = sr.ReadLine(); // only here to satisfy task criteria.
                     foreach (var cykel in _bicycles)
                     {
                         output += $"{JsonSerializer.Serialize(cykel)} {Environment.NewLine}";
