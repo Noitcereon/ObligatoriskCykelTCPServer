@@ -34,7 +34,7 @@ namespace CykelTCPServer
             TcpListener server = new TcpListener(IPAddress.Loopback, 4646);
             server.Start();
 
-            Console.WriteLine("Server ready.");
+            Console.WriteLine($"{DateTime.Now}: Server ready.");
             while (true)
             {
                 TcpClient tempSocket = server.AcceptTcpClient();
@@ -45,7 +45,7 @@ namespace CykelTCPServer
 
         private void HandleClient(TcpClient socket)
         {
-            Console.WriteLine("Client connected.");
+            Console.WriteLine($"{DateTime.Now}: Client connected.");
             // Get the stream from the client
             NetworkStream ns = socket.GetStream();
             // give the writer/reader the stream (slightly faster than using socket.GetStream() on both of them).
@@ -103,8 +103,12 @@ namespace CykelTCPServer
                                 attempts++;
 
                                 ReportFailedAttempts(attempts, sw);
-                        
-                                if(attempts >= 3) output = "Afslutter forbindelsen.";
+
+                                if (attempts >= 3)
+                                {
+                                    output = "Afslutter forbindelsen.";
+                                    Console.WriteLine("Afslutter forbindelsen.");
+                                }
                             }
                         }
 
@@ -127,7 +131,7 @@ namespace CykelTCPServer
         private void ReportFailedAttempts(int attempts, StreamWriter sw)
         {
             Console.WriteLine($"Attempt {attempts} failed");
-            sw.WriteLine($"Forkert format til cyklen, prøv igen ({attempts} af 3 forsøg");
+            sw.WriteLine($"Forkert format til cyklen, prøv igen ({attempts} af 3 forsøg)");
             sw.Flush();
         }
 
