@@ -111,7 +111,6 @@ namespace CykelTCPServer
                                 }
                             }
                         }
-
                     }
 
                     break;
